@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { evaluateMetrics, hammingDistance, missingViews, parseSkuView, scoreIssues } from '../lib/qa';
+import { colorDispersion, evaluateMetrics, hammingDistance, missingViews, parseSkuView, scoreIssues } from '../lib/qa';
 
 const clean = {
   width: 1600, height: 1600, meanLuma: 180, darkClipPct: 1, brightClipPct: 8,
@@ -24,6 +24,12 @@ test('subject occupancy and clipping are flagged independently', () => {
   const clipped = evaluateMetrics({ ...clean, clipped: true }, 'amazon');
   assert.ok(small.some(i => i.code === 'small-subject'));
   assert.ok(clipped.some(i => i.code === 'clipped'));
+});
+
+test('background dispersion detects uniformly large border deviations', () => {
+  assert.equal(colorDispersion([0, 0, 0]), 0);
+  assert.equal(colorDispersion([30, 30, 30]), 30);
+  assert.ok(colorDispersion([0, 40, 40, 0]) > 20);
 });
 
 test('perceptual hash distance counts changed bits', () => {
