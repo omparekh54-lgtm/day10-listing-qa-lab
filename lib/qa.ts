@@ -31,6 +31,11 @@ export const profiles = {
   custom: { label: 'Custom QA', minWidth: 800, minHeight: 800, minOccupancy: 50, maxOccupancy: 95, aspectTolerance: 0.5, whiteBgStd: 60 }
 } as const;
 
+export function colorDispersion(distances: number[]): number {
+  if (!distances.length) return 0;
+  return Math.sqrt(distances.reduce((sum, d) => sum + d * d, 0) / distances.length);
+}
+
 export function evaluateMetrics(metrics: Metrics, profile: Profile): Issue[] {
   const p = profiles[profile];
   const issues: Issue[] = [];
